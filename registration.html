@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:#f5f7fb; color:#122; padding:24px; }
+    .card { max-width:420px; margin:28px auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 8px 24px rgba(30,40,60,0.08); }
+    h1 { font-size:20px; margin:0 0 16px; }
+    label { display:block; font-size:13px; margin-top:12px; color:#334; }
+    input { width:100%; padding:10px 12px; margin-top:6px; border:1px solid #d7dce6; border-radius:6px; font-size:14px; }
+    .small { font-size:12px; color:#567; margin-top:6px; }
+    .row { display:flex; gap:8px; }
+    .btn { margin-top:16px; width:100%; padding:10px; background:#0b63ff; color:#fff; border:0; border-radius:6px; font-weight:600; cursor:pointer; }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .error { color:#a33; font-size:13px; margin-top:8px; }
+    .success { color:#097; font-size:13px; margin-top:8px; }
+    .pw-meter { height:8px; border-radius:6px; background:#eef2ff; margin-top:8px; overflow:hidden; }
+    .pw-meter > i { display:block; height:100%; transition:width .2s ease; background:linear-gradient(90deg,#ff7b7b,#ffb86b,#8be9a8,#7be4ff); }
+    .toggle { margin-top:8px; font-size:13px; color:#336; cursor:pointer; user-select:none; }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <h1>Create an account</h1>
+
+    <form id="regForm" novalidate>
+      <label for="name">Full name</label>
+      <input id="name" name="name" type="text" inputmode="text" autocomplete="name" required minlength="2" />
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="new-password" required minlength="8" />
+      <div class="pw-meter" aria-hidden="true"><i id="pwBar" style="width:0%"></i></div>
+      <div class="small">Use at least 8 characters. Include letters and numbers for stronger passwords.</div>
+
+      <label for="confirm">Confirm password</label>
+      <input id="confirm" name="confirm" type="password" autocomplete="new-password" required />
+
+      <div class="row" style="margin-top:8px;">
+        <div style="flex:1">
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" name="phone" type="tel" inputmode="tel" />
+        </div>
+      </div>
+
+      <div id="feedback" class="error" role="alert" style="display:none"></div>
+      <div id="ok" class="success" role="status" style="display:none"></div>
+
+      <button id="submitBtn" class="btn" type="submit">Register</button>
+    </form>
+
+    <div style="margin-top:12px; font-size:13px; color:#556">Already have an account? <a href="#" onclick="return false">Sign in</a></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('regForm');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm');
+    const email = document.getElementById('email');
+    const nameInput = document.getElementById('name');
+    const feedback = document.getElementById('feedback');
+    const ok = document.getElementById('ok');
+    const submitBtn = document.getElementById('submitBtn');
+    const pwBar = document.getElementById('pwBar');
+
+    function setFeedback(msg) {
+      if (!msg) { feedback.style.display='none'; feedback.textContent=''; return; }
+      feedback.style.display='block'; feedback.textContent = msg; ok.style.display='none';
+    }
+    function setOk(msg) {
+      if (!msg) { ok.style.display='none'; ok.textContent=''; return; }
+      ok.style.display='block'; ok.textContent = msg; feedback.style.display='none';
+    }
+
+    function pwStrengthScore(pw) {
+      let score = 0;
+      if (pw.length >= 8) score += 1;
+      if (/[a-z]/.test(pw)) score += 1;
+      if (/[A-Z]/.test(pw)) score += 1
